@@ -34,6 +34,8 @@ export default {
       h3: ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],
       h2: ['1.75rem', { lineHeight: '2.25rem', fontWeight: '600', letterSpacing: '-0.01em' }],
       h1: ['2rem', { lineHeight: '2.5rem', fontWeight: '400', letterSpacing: '-0.01em' }],
+      grade: ['3.5rem', { lineHeight: '1', fontWeight: '600' }],
+      'code-inline': '0.875em',
     },
     borderRadius: {
       none: '0',

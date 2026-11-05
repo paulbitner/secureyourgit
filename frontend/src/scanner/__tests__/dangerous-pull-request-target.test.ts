@@ -29,6 +29,25 @@ describe(RULE, () => {
     expect(findings.map((f) => f.line)).toEqual([6, 11]);
   });
 
+  it('names the trigger the checked-out context belongs to when both are present', () => {
+    const src = [
+      'on: [pull_request_target, workflow_run]',
+      'jobs:',
+      '  a:',
+      '    runs-on: ubuntu-latest',
+      '    steps:',
+      '      - run: git checkout ${{ github.event.workflow_run.head_sha }}',
+      '      - uses: actions/checkout@v4',
+      '        with:',
+      '          ref: ${{ github.event.pull_request.head.sha }}',
+    ].join('\n');
+    const titles = runRule(RULE, src).map((f) => f.title);
+    expect(titles).toEqual([
+      '`workflow_run` workflow checks out pull request code',
+      '`pull_request_target` workflow checks out pull request code',
+    ]);
+  });
+
   it('allows pull_request_target that checks out the base branch', () => {
     expect(runRule(RULE, fixture(`${RULE}/safe-base.yml`))).toEqual([]);
   });

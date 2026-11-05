@@ -1,61 +1,79 @@
-import { CornerDownRight, FileCode2, Lock, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { Head } from 'vite-react-ssg';
-import { SeverityBadge } from '../components/SeverityBadge';
+import { ChevronsDownUp, ChevronsUpDown, FileCode2, FileText, Lock, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CopyButton } from '../components/CopyButton';
+import { FindingCard } from '../components/FindingCard';
+import { GradeCard } from '../components/GradeCard';
+import { Seo } from '../components/Seo';
+import { SubHeader } from '../components/SubHeader';
 import { WorkflowEditor, type WorkflowEditorHandle } from '../components/WorkflowEditor';
 import { site } from '../config/site';
+import { gradeFindings } from '../report/grade';
+import { reportToMarkdown } from '../report/markdown';
 import { EXAMPLE_WORKFLOW } from '../scanner/example';
 import { byteLength, scan, type ScanResult } from '../scanner/scan';
-import { SEVERITY_ORDER } from '../scanner/types';
+import type { Finding } from '../scanner/types';
 
 const SCAN_DEBOUNCE_MS = 200;
 const EMPTY: ScanResult = { findings: [], parseErrors: [], kind: 'unknown', tooLarge: false };
 
-const BAR_FILL: Record<string, string> = {
-  critical: 'bg-danger',
-  high: 'bg-accent',
-  medium: 'bg-warning',
-  low: 'bg-info',
-};
+const findingKey = (f: Finding) => `${f.ruleId}-${f.offset}-${f.title}`;
 
 function formatKb(bytes: number) {
   return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: site.name,
+  url: `${site.url}/`,
+  description: site.tagline,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any (runs in the browser)',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+
 export default function Home() {
   const [source, setSource] = useState('');
   const [scanned, setScanned] = useState<{ source: string; result: ScanResult }>({ source: '', result: EMPTY });
+  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
   const editor = useRef<WorkflowEditorHandle>(null);
   const size = byteLength(source);
   const isBlank = !source.trim();
   const result = isBlank ? EMPTY : scanned.result;
+  const hasReport = !isBlank && !result.tooLarge && result.parseErrors.length === 0;
+  const grade = useMemo(() => (hasReport ? gradeFindings(result.findings) : null), [hasReport, result.findings]);
+  const allCollapsed = result.findings.length > 0 && result.findings.every((f) => collapsed.has(findingKey(f)));
 
   useEffect(() => {
     const id = setTimeout(() => setScanned({ source, result: scan(source) }), SCAN_DEBOUNCE_MS);
     return () => clearTimeout(id);
   }, [source]);
 
-  const counts = Object.fromEntries(
-    SEVERITY_ORDER.map((s) => [s, result.findings.filter((f) => f.severity === s).length]),
-  );
-  const maxCount = Math.max(1, ...Object.values(counts));
+  const toggle = (key: string) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
+  const toggleAll = () => setCollapsed(allCollapsed ? new Set() : new Set(result.findings.map(findingKey)));
 
   return (
     <>
-      <Head>
-        <title>{`${site.name} — ${site.tagline}`}</title>
-        <meta name="description" content={`${site.tagline} Free, private, runs entirely in your browser.`} />
-        <link rel="canonical" href={`${site.url}/`} />
-      </Head>
+      <Seo
+        title={`${site.name}: GitHub Actions Security Scanner`}
+        description={`${site.tagline} Free, private, and runs entirely in your browser. Get a grade, plain-English explanations, and fixes.`}
+        path="/"
+        jsonLd={JSON_LD}
+      />
 
-      <div className="bg-chrome text-chrome-fg">
-        <div className="container-content flex h-subheader items-center justify-between border-t border-chrome-2">
-          <span className="text-ui">Workflow Scanner</span>
-          <a href="#how-it-works" className="text-ui hover:text-chrome-muted">
-            How it works
-          </a>
-        </div>
-      </div>
+      <SubHeader crumbs={[{ label: 'Workflow Scanner' }]}>
+        <a href="#how-it-works" className="hover:text-chrome-muted">
+          How it works
+        </a>
+      </SubHeader>
 
       <div className="container-content pt-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
@@ -105,69 +123,67 @@ export default function Home() {
             </p>
 
             <section aria-labelledby="findings-heading" className="mt-12">
-              <h2 id="findings-heading">Findings</h2>
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+                <h2 id="findings-heading">Findings</h2>
+                {hasReport && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {result.findings.length > 0 && (
+                      <button type="button" className="btn-ghost" onClick={toggleAll}>
+                        {allCollapsed ? <ChevronsUpDown size={18} aria-hidden /> : <ChevronsDownUp size={18} aria-hidden />}
+                        {allCollapsed ? 'Expand all' : 'Collapse all'}
+                      </button>
+                    )}
+                    <CopyButton
+                      text={() => reportToMarkdown(result.findings, grade!)}
+                      label="Copy report as Markdown"
+                      className="btn-secondary"
+                      showLabel
+                    />
+                  </div>
+                )}
+              </div>
               <div aria-live="polite">
                 {result.parseErrors.length > 0 && (
                   <p className="mt-4 text-danger">
                     YAML error on line {result.parseErrors[0]!.line}: {result.parseErrors[0]!.message}
                   </p>
                 )}
-                {!source.trim() && <p className="mt-4 text-fg-muted">Paste a workflow or load the example to start.</p>}
-                {source.trim() && !result.parseErrors.length && !result.tooLarge && result.findings.length === 0 && (
-                  <p className="mt-4">
-                    <span className="badge-success">No issues found</span>
+                {isBlank && (
+                  <p className="mt-4 inline-flex items-center gap-2 text-fg-muted">
+                    <FileText size={18} aria-hidden />
+                    Paste a workflow or load the example to start.
                   </p>
                 )}
-                <ul className="mt-4">
-                  {result.findings.map((f) => (
-                    <li key={`${f.ruleId}-${f.offset}-${f.title}`} className="border-b border-border py-6">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <SeverityBadge severity={f.severity} />
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-1 text-sm link"
-                          onClick={() => editor.current?.reveal(f)}
-                          aria-label={`Show line ${f.line} in the editor`}
-                        >
-                          <CornerDownRight size={14} aria-hidden />
-                          Line {f.line}
-                        </button>
-                      </div>
-                      <h3 className="mt-2 text-lead">
-                        <button
-                          type="button"
-                          className="text-left hover:text-primary"
-                          onClick={() => editor.current?.reveal(f)}
-                        >
-                          {f.title}
-                        </button>
-                      </h3>
-                      <p className="mt-1">{f.message}</p>
-                    </li>
-                  ))}
-                </ul>
+                {hasReport && result.findings.length === 0 && (
+                  <p className="mt-4">
+                    <span className="badge-success">No issues found</span>{' '}
+                    {result.kind === 'unknown' && (
+                      <span className="text-sm text-fg-muted">
+                        This doesn’t look like a workflow or composite action, so there was nothing to check.
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
+              <ul>
+                {result.findings.map((f) => {
+                  const key = findingKey(f);
+                  return (
+                    <FindingCard
+                      key={key}
+                      finding={f}
+                      expanded={!collapsed.has(key)}
+                      onToggle={() => toggle(key)}
+                      onReveal={() => editor.current?.reveal(f)}
+                    />
+                  );
+                })}
+              </ul>
             </section>
           </section>
 
           <aside aria-label="Scan summary" className="space-y-12">
-            <section>
-              <h2 className="text-h3">Summary</h2>
-              <ul className="mt-4 space-y-3">
-                {SEVERITY_ORDER.map((s) => (
-                  <li key={s} className="flex items-center gap-3 text-ui">
-                    <span className="w-20 capitalize text-primary">{s}</span>
-                    <span className="h-6 flex-1 bg-surface-2" aria-hidden>
-                      <span
-                        className={`block h-full ${BAR_FILL[s]}`}
-                        style={{ width: `${(counts[s]! / maxCount) * 100}%` }}
-                      />
-                    </span>
-                    <span className="w-8 text-right">{counts[s]}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <GradeCard grade={grade} />
             <section id="how-it-works">
               <h2 className="text-h3">How it works</h2>
               <p className="mt-3 text-sm text-fg-muted">

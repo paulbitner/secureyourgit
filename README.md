@@ -33,4 +33,24 @@ make check      # lint + typecheck + tests + static build
 - `frontend/src/scanner/rules/*.ts`: one file per rule, each default-exporting `{ id, title, severity, description, check(ctx) }`. The registry picks rules up automatically with `import.meta.glob`, so **adding a rule means adding one file**.
 - `frontend/src/scanner/__tests__/`: Vitest suites plus vulnerable and safe YAML fixtures for each rule.
 
+## Grading
+
+`frontend/src/report/grade.ts`:
+
+```
+score = max(0, 100 − 40·critical − 15·high − 5·medium − 1·low)
+A ≥ 90 · B ≥ 80 · C ≥ 70 · D ≥ 60 · F < 60
+```
+
+One critical finding caps the grade at D and two make it F. One high finding takes an otherwise clean file to B.
+
+## Static build
+
+`npm run build` pre-renders every route to HTML (vite-react-ssg). It then:
+
+1. moves inline `<script>`s into hashed files under `/assets/inline/`, and fails if any remain, so the CSP can stay at `script-src 'self'`;
+2. writes `sitemap.xml` and `robots.txt` from the pages' canonical URLs, skipping `noindex` pages.
+
+The Open Graph image comes from `frontend/scripts/og-image.html`; regenerate it with `make og-image`.
+
 An ESLint rule forbids `fetch` outside `src/api/`, so workflow content can't be sent over the network by accident.

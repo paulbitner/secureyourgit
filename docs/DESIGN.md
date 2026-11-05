@@ -144,3 +144,22 @@ a manual toggle persisted in `localStorage`.
   size, radius and spacing names. Components use **only** these names, never
   hex values or arbitrary `[...]` values.
 - Icons come from Lucide (`lucide-react`). No brand icons.
+
+## Intentional differences from the reference
+
+Reviewed after Phase 2. Each item is a deliberate departure, and the reason is given.
+
+| Reference pattern | Our UI | Why |
+|---|---|---|
+| Full-width hero banner image above the title row | No banner. Icon tile + H1 row only | On the scanner, the editor *is* the hero. A banner would push the tool below the fold, and we have no product imagery to show. |
+| Content sections are almost never contained | The editor and code blocks have a border and a surface fill | An editable area needs a clear boundary and a visible focus ring. Code needs a distinct surface to read as code. |
+| Color used sparingly: one blue plus the rust rating bars | Severity colors (red/orange/amber/blue) on badges, bars, editor highlights and gutter dots | Severity is the main thing a scanner communicates. Color stays confined to those indicators, body text stays neutral, and every color is paired with a text label (badge text, "Vulnerable"/"Fixed" captions) for color-blind users. |
+| Rating bars all share one accent color | Each severity bar uses its own color | The bars mean different things, not the same metric at different levels. |
+| Tabs switch between content panels | Rule pages use the tab styling for **in-page anchor links**. Every section is always rendered | Keeping everything in the pre-rendered HTML is better for SEO, Ctrl-F and screen readers. "Overview" is shown as the active tab and does not track scroll position. |
+| No good/bad markers on code | Vulnerable and fixed examples have red/green left borders and labels | Readers must tell the two examples apart at a glance. |
+| Header: search field and a primary CTA button | Theme toggle instead; no search or CTA | The scanner itself is the CTA, and five rules don't need search. Dark mode is our addition. |
+| Sub-header: account links (submit, favorites, log in) | Breadcrumbs plus "How it works" | There are no accounts. The sub-header becomes the breadcrumb bar on every page. |
+| Footer: 5 link columns, social icons, motto band | 4 columns, no social icons, our own motto | We have no social accounts yet and don't copy the reference's text. |
+| Only primary buttons shown | Secondary (outlined) and ghost buttons derived from it | The scanner needs several lower-priority actions next to one primary one. |
+| Desktop-only screenshots | Mobile layout: collapsible nav menu, stacked title rows, single column | Required down to 375 px. Long identifiers wrap instead of widening the page. |
+| Light mode only | Full dark mode | Derived as described above. |

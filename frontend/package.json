@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite-react-ssg dev",
-    "build": "tsc -b && vite-react-ssg build && node scripts/externalize-inline-scripts.mjs",
+    "build": "tsc -b && vite-react-ssg build && node scripts/externalize-inline-scripts.mjs && node scripts/generate-seo-files.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "typecheck": "tsc -b --noEmit",

@@ -53,11 +53,18 @@ const rule: Rule = {
   description:
     '`pull_request_target` and `workflow_run` run with secrets and a write token. Checking out and running the pull request’s code in that context lets anyone who opens a PR execute code with those privileges ("pwn request").',
   check(ctx) {
-    const trigger = ctx.workflow.triggers.find((t) => PRIVILEGED_TRIGGERS.includes(t));
-    if (!trigger) return [];
+    const present = ctx.workflow.triggers.filter((t) => PRIVILEGED_TRIGGERS.includes(t));
+    if (present.length === 0) return [];
     const findings: Finding[] = [];
 
-    const report = (node: Node | Location | undefined, how: string, context: string) =>
+    // Name the trigger the checked-out context actually belongs to.
+    const triggerFor = (context: string) => {
+      const preferred = context.includes('workflow_run') ? 'workflow_run' : 'pull_request_target';
+      return present.includes(preferred) ? preferred : present[0]!;
+    };
+
+    const report = (node: Node | Location | undefined, how: string, context: string) => {
+      const trigger = triggerFor(context);
       findings.push(
         makeFinding(ctx, ID, node, {
           severity: 'critical',
@@ -67,6 +74,7 @@ const rule: Rule = {
           fix: FIX,
         }),
       );
+    };
 
     for (const job of ctx.workflow.jobs) {
       for (const step of job.steps) {
