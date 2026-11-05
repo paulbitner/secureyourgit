@@ -1,0 +1,13 @@
+on: push
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm test
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm publish

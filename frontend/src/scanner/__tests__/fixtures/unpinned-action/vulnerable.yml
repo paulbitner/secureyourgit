@@ -1,0 +1,14 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: some-org/setup-thing@v1
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+      - uses: some-org/no-ref
+      - uses: some-org/short-sha@b4ffde6
+      - name: Branch ref
+        uses: "some-org/other@main"
+  call:
+    uses: some-org/workflows/.github/workflows/ci.yml@main

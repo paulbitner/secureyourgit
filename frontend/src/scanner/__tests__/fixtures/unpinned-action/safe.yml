@@ -1,0 +1,15 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: some-org/setup-thing@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: github/codeql-action/init@b4ffde65f46336ab88eb53be808477a3936bae11 # v3
+      - uses: ./.github/actions/local-thing
+      - uses: docker://alpine@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      - run: 'echo "uses: some-org/fake@v1 is just text"'
+  call-local:
+    uses: ./.github/workflows/reusable.yml
+  call-remote:
+    uses: some-org/workflows/.github/workflows/ci.yml@b4ffde65f46336ab88eb53be808477a3936bae11

@@ -1,0 +1,13 @@
+on: push
+permissions:
+  contents: read
+jobs:
+  everything:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: write
+      pull-requests: read
+    steps:
+      - run: make all

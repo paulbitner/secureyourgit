@@ -1,0 +1,8 @@
+name: composite
+runs:
+  using: composite
+  steps:
+    - &greet
+      run: echo "${{ github.event.pull_request.body }}"
+      shell: bash
+    - *greet

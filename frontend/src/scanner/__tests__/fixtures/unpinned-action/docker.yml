@@ -1,0 +1,7 @@
+on: push
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://hadolint/hadolint:latest
+      - uses: docker://alpine

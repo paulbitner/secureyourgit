@@ -1,0 +1,13 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u me --password-stdin ghcr.io
+      - run: echo "TOKEN=${{ secrets.TOKEN }}" >> "$GITHUB_ENV"
+      - env:
+          NOT_SECRET: ${{ github.sha }}
+        run: echo "$NOT_SECRET"
+      - env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: ./deploy.sh

@@ -1,0 +1,17 @@
+on: push
+x-shared-steps:
+  checkout: &checkout
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - <<: *checkout
+        name: merged checkout
+  b:
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout

@@ -1,0 +1,12 @@
+on:
+  issues:
+    types: [opened]
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Greet
+        run: |
+          echo "Starting"
+          echo "Title: ${{ github.event.issue.title }}"
+          echo "Done"

@@ -1,0 +1,17 @@
+on: push
+env:
+  GLOBAL_TOKEN: ${{ secrets.GLOBAL_TOKEN }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      JOB_TOKEN: ${{ secrets.JOB_TOKEN }}
+    steps:
+      - run: echo ${{ secrets.API_KEY }}
+      - env:
+          STEP_TOKEN: ${{ secrets.STEP_TOKEN }}
+        run: |
+          echo "step: $STEP_TOKEN"
+          cd app && printf '%s' "${JOB_TOKEN}"
+          echo "global: $GLOBAL_TOKEN"
+      - run: echo "${{ github.token }}"

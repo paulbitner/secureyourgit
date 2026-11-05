@@ -1,0 +1,62 @@
+/* Design tokens — see docs/DESIGN.md. Values are RGB channels so Tailwind can apply alpha. */
+:root {
+  color-scheme: light;
+  --chrome: 30 30 30;
+  --chrome-2: 44 51 56;
+  --chrome-deep: 20 20 20;
+  --chrome-fg: 255 255 255;
+  --chrome-muted: 167 170 173;
+
+  --bg: 255 255 255;
+  --surface: 246 247 247;
+  --surface-2: 240 240 241;
+  --border: 220 220 222;
+  --border-strong: 195 196 199;
+  --fg: 30 30 30;
+  --fg-muted: 80 87 94;
+
+  --primary: 56 88 233;
+  --primary-hover: 33 69 230;
+  --primary-fg: 255 255 255;
+  --accent: 217 113 79;
+
+  --success: 0 138 32;
+  --success-subtle: 184 230 191;
+  --warning: 153 104 0;
+  --warning-subtle: 252 240 195;
+  --danger: 204 24 24;
+  --danger-subtle: 250 207 210;
+  --info: 56 88 233;
+  --info-subtle: 229 233 253;
+}
+
+.dark {
+  color-scheme: dark;
+  --chrome: 16 18 20;
+  --chrome-2: 26 29 32;
+  --chrome-deep: 11 12 13;
+  --chrome-fg: 240 240 241;
+  --chrome-muted: 140 143 148;
+
+  --bg: 22 24 26;
+  --surface: 31 34 37;
+  --surface-2: 39 43 47;
+  --border: 58 63 68;
+  --border-strong: 80 87 94;
+  --fg: 240 240 241;
+  --fg-muted: 167 170 173;
+
+  --primary: 123 144 255;
+  --primary-hover: 154 171 255;
+  --primary-fg: 11 12 13;
+  --accent: 232 135 106;
+
+  --success: 74 184 102;
+  --success-subtle: 27 59 36;
+  --warning: 240 195 60;
+  --warning-subtle: 61 50 20;
+  --danger: 248 99 104;
+  --danger-subtle: 63 29 31;
+  --info: 123 144 255;
+  --info-subtle: 30 37 70;
+}

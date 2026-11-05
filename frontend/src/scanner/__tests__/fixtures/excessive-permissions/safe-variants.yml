@@ -1,0 +1,18 @@
+on: push
+jobs:
+  none:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: echo none
+  readall:
+    runs-on: ubuntu-latest
+    permissions: read-all
+    steps:
+      - run: echo read
+  single:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - run: git push

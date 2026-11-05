@@ -1,0 +1,61 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-bg text-fg font-sans antialiased;
+  }
+  body {
+    @apply text-base;
+  }
+  h1 { @apply text-h1; }
+  h2 { @apply text-h2; }
+  h3 { @apply text-h3; }
+  :focus-visible {
+    @apply outline-none shadow-focus;
+  }
+  code, kbd, pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-content px-4 sm:px-gutter;
+  }
+  .link {
+    @apply text-primary underline underline-offset-2 hover:text-primary-hover;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2.5 text-ui font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-primary-fg hover:bg-primary-hover;
+  }
+  .btn-secondary {
+    @apply btn border border-primary bg-bg text-primary hover:bg-surface;
+  }
+  .btn-ghost {
+    @apply btn text-fg hover:bg-surface-2;
+  }
+  .btn-chrome {
+    @apply btn px-2 text-chrome-fg hover:bg-chrome-2;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-sm px-2 py-0.5 text-label uppercase;
+  }
+  .badge-critical { @apply badge bg-danger-subtle text-danger; }
+  .badge-high { @apply badge bg-accent/15 text-accent; }
+  .badge-medium { @apply badge bg-warning-subtle text-warning; }
+  .badge-low { @apply badge bg-info-subtle text-info; }
+  .badge-success { @apply badge bg-success-subtle text-success; }
+  .code-block {
+    @apply overflow-x-auto rounded-md bg-surface p-4 font-mono text-code;
+  }
+  .meta-row {
+    @apply flex items-center justify-between border-b border-border py-3.5 text-sm;
+  }
+}

@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+dist/
+.vite-react-ssg-temp/
+__pycache__/
+.venv/
+.terraform/
+*.tfstate*
+.env
+.env.*
+!.env.example

@@ -1,0 +1,8 @@
+on: push
+permissions: write-all
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - run: npm test

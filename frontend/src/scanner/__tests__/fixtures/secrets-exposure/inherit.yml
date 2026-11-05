@@ -1,0 +1,16 @@
+on: push
+jobs:
+  local:
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+  remote:
+    uses: some-org/workflows/.github/workflows/release.yml@v2
+    secrets: inherit
+  remote-explicit:
+    uses: some-org/workflows/.github/workflows/release.yml@v2
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  pinned-explicit:
+    uses: some-org/workflows/.github/workflows/release.yml@b4ffde65f46336ab88eb53be808477a3936bae11
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

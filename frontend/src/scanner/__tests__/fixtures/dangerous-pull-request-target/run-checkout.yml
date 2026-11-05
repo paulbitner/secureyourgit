@@ -1,0 +1,12 @@
+on: pull_request_target
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh pr checkout ${{ github.event.pull_request.number }}
+  b:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
+          git checkout pr

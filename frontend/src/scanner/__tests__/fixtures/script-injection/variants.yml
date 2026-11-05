@@ -1,0 +1,12 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ github.event['issue']['title'] }}"
+      - run: echo "${{ github.event.commits[0].message }}"
+      - run: echo '${{ toJSON(github.event.pull_request) }}'
+      - run: >-
+          echo "${{ github.event.head_commit.author.name }}"
+      - run: "echo \"${{ github.event.pages[0].page_name }}\""
+      - run: echo "${{ github.event.release.body }}"

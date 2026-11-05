@@ -1,0 +1,19 @@
+on: issues
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      # echo "${{ github.event.issue.title }}" in a YAML comment is harmless
+      - name: Greet
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          echo "Title: $TITLE"
+          echo "Issue #${{ github.event.issue.number }} on ${{ matrix.os }}"
+          echo "Actor: ${{ github.actor }} sha ${{ github.sha }}"
+      - uses: some-org/action@b4ffde65f46336ab88eb53be808477a3936bae11
+        with:
+          text: ${{ github.event.issue.title }}
