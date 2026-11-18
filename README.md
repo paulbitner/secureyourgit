@@ -34,3 +34,10 @@ make check      # lint + typecheck + tests + static build
 - `frontend/src/scanner/__tests__/`: Vitest suites plus vulnerable and safe YAML fixtures for each rule.
 
 An ESLint rule forbids `fetch` outside `src/api/`, so workflow content can't be sent over the network by accident.
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE). Copyright 2026 The
+Secure Your Git Authors; see [`NOTICE`](NOTICE).
+
+Contributions are accepted under the same license.
